@@ -2,6 +2,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
+const movieRoutes = require('./routes/movieRoutes');
+const protectedRoutes = require('./routes/protectedRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -12,7 +16,7 @@ const app = express();
 // Middleware to parse incoming JSON data
 app.use(express.json());
 
-// Function to connect to the MongoDB database using Mongoose
+// Function to connect
 async function connectToDatabase() {
     try {
         await mongoose.connect(process.env.MONGODB_URI, {
@@ -21,22 +25,22 @@ async function connectToDatabase() {
         });
         console.log('Connected to MongoDB');
     } catch (err) {
-        console.error('Error connecting to MongoDB:', err);
+        console.error('Error connecting to MongoDB: ', err);
         process.exit(1);
     }
 }
 
-// Connect to the database
+// Connect to DB
 connectToDatabase();
 
-// Placeholder route for testing
-app.get('/', (req, res) => {
-    res.send('Hello from the Movie Database API!');
-});
-
-// Start the server
+// Start 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
 });
 
+// Use the user routes
+app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/movies', movieRoutes);
+app.use('/api', protectedRoutes);
