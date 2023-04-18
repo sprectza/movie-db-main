@@ -21,6 +21,10 @@ const UserSchema = new mongoose.Schema({
         minlength: 6,
         select: false,
     },
+    favorites: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Movie',
+    }],
 });
 
 UserSchema.methods.matchPassword = async function (enteredPassword) {

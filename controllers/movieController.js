@@ -15,11 +15,24 @@ exports.addMovie = async (req, res) => {
 
 exports.getMovies = async (req, res) => {
     try {
-        const movies = await Movie.find();
-        res.status(200).json({ movies });
+        const query = {};
+        if (req.query.title) {
+            query.title = { $regex: req.query.title, $options: 'i' }
+        }
+
+        if (req.query.genre) {
+            query.genre = req.query.genre;
+        }
+
+        if (req.query.year) {
+            query.releaseYear = req.query.year;
+        }
+
+        const movies = await Movies.find(query);
+        res.status(200).json({ success: true, data: movies });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ success: false, message: 'Server error' });
     }
 };
 
